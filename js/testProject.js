@@ -1,13 +1,22 @@
 function init() {
-    
+
     // listen to the resize events
     window.addEventListener('resize', onResize, false);
+    window.addEventListener('click', onMouseDown, false);
 
-    var camera;
-    var scene;
-    var renderer;
-    var trackballControls;
+    const _changeEvent = { type: 'change' };
+    const _startEvent = { type: 'start' };
+    const _endEvent = { type: 'end' };
+
+
+    var camera = undefined;
+    var scene = undefined;
+    var renderer = undefined;
+    var trackballControls = undefined;
     var GLTFScene = undefined;
+    var mousePointer = new THREE.Vector2();
+    var raycasterManager = new THREE.Raycaster();
+    var isObjectLoaded = false;
 
     // initialize stats
     var stats = initStats();
@@ -40,6 +49,8 @@ function init() {
     plane.position.y = 0;
     plane.position.z = 0;
 
+    plane.name = "plane";
+
     // add the plane to the scene
     scene.add(plane);
 
@@ -48,11 +59,12 @@ function init() {
     var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
     var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.castShadow = true;
+    cube.name = "cube";
 
     // position the cube
-    cube.position.x = -4;
-    cube.position.y = 3;
-    cube.position.z = 0;
+    //cube.position.x = 0;
+    //cube.position.y = 0;
+    //cube.position.z = 0;
 
     // add the cube to the scene
     scene.add(cube);
@@ -67,6 +79,7 @@ function init() {
     sphere.position.z = 2;
     sphere.castShadow = true;
 
+    sphere.name = "sphere";
     // add the sphere to the scene
     scene.add(sphere);
 
@@ -107,9 +120,12 @@ function init() {
         this.ligthX = -10.0;
         this.ligthY = 20.0;
         this.ligthZ = -5.0;
-        this.GLTFScaleX = 1;
-        this.GLTFScaleY = 1;
-        this.GLTFScaleZ = 1;
+        this.scaleX = 5;
+        this.scaleY = 5;
+        this.scaleZ = 5;
+        this.posX = 0;
+        this.posY = 0;
+        this.posZ = 0;
     };
 
     const gui = new dat.GUI();
@@ -118,39 +134,45 @@ function init() {
     gui.add(controls, 'ligthX', -100, 100);
     gui.add(controls, 'ligthY', -100, 100);
     gui.add(controls, 'ligthZ', -100, 100);
-    gui.add(controls, 'GLTFScaleX', 0, 10);
-    gui.add(controls, 'GLTFScaleY', 0, 10);
-    gui.add(controls, 'GLTFScaleZ', 0, 10);
+    gui.add(controls, 'scaleX', 0, 20);
+    gui.add(controls, 'scaleY', 0, 20);
+    gui.add(controls, 'scaleZ', 0, 20);
+    gui.add(controls, 'posX', -100, 100);
+    gui.add(controls, 'posY', -100, 100);
+    gui.add(controls, 'posZ', -100, 100);
     gui.addColor(controls, 'color');
 
-    
+
 
     const gltfLoader = new THREE.GLTFLoader();
-    
-//  gltfLoader.load('models/helmet/helmet.gltf', (gltf) => {
-//    const GLTFScene = gltf.scene;
-//    scene.add(GLTFScene);
- // });
-    
-//      gltfLoader.load('models/cartoon_lowpoly_small_city_free_pack/scene.gltf', (gltf) => {
-//    const GLTFScene = gltf.scene;
-//    scene.add(GLTFScene);
-//  });
-  //  
-    
-  
-    
-  gltfLoader.load('models/parkBench/scene.gltf', (gltf) => {
-    
-	GLTFScene = gltf.scene;    
-    scene.add(GLTFScene);
-  });
- 
+
+    //  gltfLoader.load('models/helmet/helmet.gltf', (gltf) => {
+    //    const GLTFScene = gltf.scene;
+    //    scene.add(GLTFScene);
+    // });
+
+    //      gltfLoader.load('models/cartoon_lowpoly_small_city_free_pack/scene.gltf', (gltf) => {
+    //    const GLTFScene = gltf.scene;
+    //    scene.add(GLTFScene);
+    //  });
+    //  
+
+
+
+    gltfLoader.load('models/parkBench/scene.gltf', (gltf) => {
+
+        GLTFScene = gltf.scene;
+        scene.add(GLTFScene);
+        isObjectLoaded = true;
+    });
+
     // initialize the trackball controls and the clock which is needed
 
     createControls(camera);
 
     var clock = new THREE.Clock();
+
+    //activate();
 
     render();
 
@@ -173,8 +195,10 @@ function init() {
         sphere.material = new THREE.MeshLambertMaterial({ color: controls.color });
 
         spotLight.position.set(controls.ligthX, controls.ligthY, controls.ligthZ);
-        
-        if(GLTFScene != undefined) GLTFScene.scale.set(controls.GLTFScaleX, controls.GLTFScaleY, controls.GLTFScaleZ);
+        //cube.position.set(controls.posX, controls.posY, controls.posZ);
+
+        if (isObjectLoaded == true) GLTFScene.scale.set(controls.scaleX, controls.scaleY, controls.scaleZ);
+        if (isObjectLoaded == true) GLTFScene.position.set(controls.posX, controls.posY, controls.posZ);
 
         // render using requestAnimationFrame
         requestAnimationFrame(render);
@@ -196,5 +220,117 @@ function init() {
         trackballControls.panSpeed = 0.8;
 
         trackballControls.keys = ['KeyA', 'KeyS', 'KeyD'];
+    }
+
+    const scope = this;
+
+    function onMouseDown(event) {
+
+        mousePointer.set(((event.pageX / window.innerWidth) * 2 - 1), (- (event.pageY / window.innerHeight) * 2 + 1));
+        raycasterManager.setFromCamera(mousePointer, camera);
+        var intersects = raycasterManager.intersectObjects(scene.children);
+        controls.posX = intersects[0].point.x;
+        controls.posY = intersects[0].point.y;
+        controls.posZ = intersects[0].point.z;
+        //let my3dPosition = THREE.worldPointFromScreenPoint( viewportDown, mySceneCamera );
+
+        //let rect = plane.geometry.boundingBox.max;
+        //let rect = event.getBoundingClientRect()
+        //controls.posX = event.clientX - rect.left; //x position within the element.
+        //controls.posY = event.clientY - rect.top;  //y position within the element.
+
+        // if (Math.abs(event.clientX - plane.geometry.parameters.height) > plane.geometry.parameters.height){
+
+        //  controls.posX = plane.position.x;
+
+        // } else {
+
+        //    controls.posX = event.clientX;
+        // }
+
+        //if (Math.abs(event.clientY - plane.geometry.parameters.width) > plane.geometry.parameters.width){
+
+        //     controls.posY = plane.position.Y;
+
+        // } else {
+
+        //     controls.posY = event.clientY;
+        // }
+    }
+
+
+    function activate() {
+
+        //_domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+        //_domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+        //_domElement.addEventListener( 'mouseup', onDocumentMouseCancel, false );
+        //_domElement.addEventListener( 'mouseleave', onDocumentMouseCancel, false );
+        //_domElement.addEventListener( 'touchmove', onDocumentTouchMove, false );
+        _domElement.addEventListener('touchstart', onDocumentTouchStart, false);
+        _domElement.addEventListener('touchend', onDocumentTouchEnd, false);
+    }
+
+    function deactivate() {
+
+        //_domElement.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+        //_domElement.removeEventListener( 'mousedown', onDocumentMouseDown, false );
+        //_domElement.removeEventListener( 'mouseup', onDocumentMouseCancel, false );
+        //_domElement.removeEventListener( 'mouseleave', onDocumentMouseCancel, false );
+        //_domElement.removeEventListener( 'touchmove', onDocumentTouchMove, false );
+        _domElement.removeEventListener('touchstart', onDocumentTouchStart, false);
+        _domElement.removeEventListener('touchend', onDocumentTouchEnd, false);
+    }
+
+    function onDocumentTouchStart(event) {
+
+        event.preventDefault();
+        event = event.changedTouches[0];
+
+        var rect = _domElement.getBoundingClientRect();
+
+        _mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        _mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        _intersections.length = 0;
+
+        _raycaster.setFromCamera(_mouse, _camera);
+        _raycaster.intersectObjects(_objects, true, _intersections);
+
+        if (_intersections.length > 0) {
+
+            _selected = (scope.transformGroup === true) ? _objects[0] : _intersections[0].object;
+
+            _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(_selected.matrixWorld));
+
+            if (_raycaster.ray.intersectPlane(_plane, _intersection)) {
+
+                _inverseMatrix.getInverse(_selected.parent.matrixWorld);
+                _offset.copy(_intersection).sub(_worldPosition.setFromMatrixPosition(_selected.matrixWorld));
+
+            }
+
+            _domElement.style.cursor = 'move';
+
+            scope.dispatchEvent({ type: 'dragstart', object: _selected });
+
+        }
+
+
+    }
+
+    function onDocumentTouchEnd(event) {
+
+        event.preventDefault();
+
+        if (_selected) {
+
+            scope.dispatchEvent({ type: 'dragend', object: _selected });
+
+            _selected = null;
+
+        }
+
+        _domElement.style.cursor = 'auto';
+
     }
 }
