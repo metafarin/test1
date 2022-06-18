@@ -3,6 +3,8 @@ function init() {
     // listen to the resize events
     window.addEventListener('resize', onResize, false);
     window.addEventListener('click', onMouseDown, false);
+    window.addEventListener('devicemotion', devicemotion, false);
+
 
     const _changeEvent = { type: 'change' };
     const _startEvent = { type: 'start' };
@@ -17,6 +19,7 @@ function init() {
     var mousePointer = new THREE.Vector2();
     var raycasterManager = new THREE.Raycaster();
     var isObjectLoaded = false;
+    var accelerometerData;
 
     // initialize stats
     var stats = initStats();
@@ -126,6 +129,7 @@ function init() {
         this.posX = 0;
         this.posY = 0;
         this.posZ = 0;
+        this.accX = 0;
     };
 
     const gui = new dat.GUI();
@@ -140,11 +144,21 @@ function init() {
     gui.add(controls, 'posX', -100, 100);
     gui.add(controls, 'posY', -100, 100);
     gui.add(controls, 'posZ', -100, 100);
+    gui.add(controls, 'accX');
     gui.addColor(controls, 'color');
+
+    //First create and append a webgl renderer, then :
+    //const ls = new LoadScreen(renderer).onComplete(init).start(ASSETS);
+
+    //function init() {
+        //Init scene, then :
+       // ls.remove(animate);
+   // }
 
 
 
     const gltfLoader = new THREE.GLTFLoader();
+    const loaderManagere = new THREE.LoadingManager();
 
     //  gltfLoader.load('models/helmet/helmet.gltf', (gltf) => {
     //    const GLTFScene = gltf.scene;
@@ -209,6 +223,13 @@ function init() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function devicemotion(event) {
+
+        controls.accX = event.accelerometerData;
+
+
     }
 
     function createControls(camera) {
