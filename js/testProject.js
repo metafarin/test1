@@ -3,7 +3,7 @@ function init() {
     // listen to the resize events
     window.addEventListener('resize', onResize, false);
     window.addEventListener('click', onMouseDown, false);
-    window.addEventListener('devicemotion', devicemotion, false);
+    window.addEventListener('devicemotion', devicemotion, 100);
 
 
     const _changeEvent = { type: 'change' };
