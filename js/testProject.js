@@ -227,7 +227,7 @@ function init() {
 
     function devicemotion(event) {
 
-        controls.accX = event.accelerometerData;
+        controls.accX = event.acceleration.x;
 
 
     }
