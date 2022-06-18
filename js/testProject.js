@@ -3,7 +3,7 @@ function init() {
     // listen to the resize events
     window.addEventListener('resize', onResize, false);
     window.addEventListener('click', onMouseDown, false);
-    window.addEventListener('devicemotion', devicemotion, 100);
+    window.addEventListener('devicemotion', devicemotion, 1000);
 
 
     const _changeEvent = { type: 'change' };
@@ -214,7 +214,9 @@ function init() {
         if (isObjectLoaded == true) GLTFScene.scale.set(controls.scaleX, controls.scaleY, controls.scaleZ);
         if (isObjectLoaded == true) GLTFScene.position.set(controls.posX, controls.posY, controls.posZ);
 
-        // render using requestAnimationFrame
+        //controls.accX = controls.posX;
+        //gui.updateDisplay();
+         // render using requestAnimationFrame
         requestAnimationFrame(render);
         renderer.render(scene, camera);
     }
@@ -228,8 +230,7 @@ function init() {
     function devicemotion(event) {
 
         controls.accX = event.acceleration.x;
-
-
+        gui.updateDisplay();
     }
 
     function createControls(camera) {
