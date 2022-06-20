@@ -87,18 +87,68 @@ function init() {
     scene.add(sphere);
 
     // position and point the camera to the center of the scene
-    camera.position.x = -30;
-    camera.position.y = 40;
-    camera.position.z = 30;
-    camera.lookAt(scene.position);
+    //camera.position.x = -30;
+    //camera.position.y = 40;
+    //camera.position.z = 30;
+    //camera.lookAt(scene.position);
+
+    // array of functions for the rendering loop
+    var onRenderFcts = [];
+
+    // get tracking method from location.search
+    var trackingMethod = location.search.substring(1) ? location.search.substring(1) : 'best'
+
+    // Initialize the camera
+    var camera = ARjs.Utils.createDefaultCamera(trackingMethod)
+    scene.add(camera)
+
+    // Set up Arjs.Profile
+    var arProfile = new ARjs.Profile()
+        .sourceWebcam()
+        .trackingMethod(trackingMethod)
+        // .changeMatrixMode('modelViewMatrix')
+        // .changeMatrixMode('cameraTransformMatrix')
+        .defaultMarker()
+        .checkIfValid()
+
+    // build ARjs.Session
+    var arSession = new ARjs.Session({
+        scene: scene,
+        renderer: renderer,
+        camera: camera,
+        sourceParameters: arProfile.sourceParameters,
+        contextParameters: arProfile.contextParameters
+    })
+    onRenderFcts.push(function () {
+        arSession.update()
+    })
+
+    // Create a ARjs.Anchor
+    var arAnchor = new ARjs.Anchor(arSession, arProfile.defaultMarkerParameters)
+    onRenderFcts.push(function () {
+        arAnchor.update()
+    })
+
+    //handle Hit Tester
+    var hitTesting = new ARjs.HitTesting(arSession)
+    onRenderFcts.push(function () {
+        hitTesting.update(camera, arAnchor.object3d, arAnchor.parameters.changeMatrixMode)
+    })
+
+    // add an object to the arAnchor
+    var arWorldRoot = arAnchor.object3d
+
+    var mesh = new THREE.AxesHelper()
+    arWorldRoot.add(mesh)
+
 
     // add subtle ambient lighting
-    var ambienLight = new THREE.AmbientLight(0x353535);
-    scene.add(ambienLight);
+    //var ambienLight = new THREE.AmbientLight(0x353535);
+    //scene.add(ambienLight);
 
-    var spotLight = new THREE.PointLight(0xffffff, 2, 100);
-    spotLight.position.set(50, 50, 50);
-    spotLight.castShadow = true;
+    //var spotLight = new THREE.PointLight(0xffffff, 2, 100);
+    //spotLight.position.set(50, 50, 50);
+    //spotLight.castShadow = true;
     //spotLight.shadow.mapSize.width = 1024;
     //spotLight.shadow.mapSize.height = 1024;
     //spotLight.shadow.camera.near = 500;
@@ -108,7 +158,7 @@ function init() {
     //var spotLight = new THREE.DirectionalLight(0xffffff, 1);
     //spotLight.position.set(-10, 20, -5);
     //spotLight.castShadow = true;
-    scene.add(spotLight);
+    //scene.add(spotLight);
 
     // add the output of the renderer to the html element
     document.getElementById("webgl-output").appendChild(renderer.domElement);
@@ -151,9 +201,9 @@ function init() {
     //const ls = new LoadScreen(renderer).onComplete(init).start(ASSETS);
 
     //function init() {
-        //Init scene, then :
-       // ls.remove(animate);
-   // }
+    //Init scene, then :
+    // ls.remove(animate);
+    // }
 
 
 
@@ -188,6 +238,11 @@ function init() {
 
     //activate();
 
+
+    // arToolkitSource.init(function onReady(){
+    //	onResize()
+    //})
+
     render();
 
     function render() {
@@ -197,18 +252,18 @@ function init() {
         stats.update();
 
         // rotate the cube around its axes
-        cube.rotation.x += controls.rotationSpeed;
-        cube.rotation.y += controls.rotationSpeed;
-        cube.rotation.z += controls.rotationSpeed;
+        //cube.rotation.x += controls.rotationSpeed;
+        //cube.rotation.y += controls.rotationSpeed;
+        //cube.rotation.z += controls.rotationSpeed;
 
 
         // bounce the sphere up and down
-        step += controls.bouncingSpeed;
-        sphere.position.x = 20 + (10 * (Math.cos(step)));
-        sphere.position.y = 2 + (10 * Math.abs(Math.sin(step)));
-        sphere.material = new THREE.MeshLambertMaterial({ color: controls.color });
+        //step += controls.bouncingSpeed;
+        //sphere.position.x = 20 + (10 * (Math.cos(step)));
+        //sphere.position.y = 2 + (10 * Math.abs(Math.sin(step)));
+        //sphere.material = new THREE.MeshLambertMaterial({ color: controls.color });
 
-        spotLight.position.set(controls.ligthX, controls.ligthY, controls.ligthZ);
+        //spotLight.position.set(controls.ligthX, controls.ligthY, controls.ligthZ);
         //cube.position.set(controls.posX, controls.posY, controls.posZ);
 
         if (isObjectLoaded == true) GLTFScene.scale.set(controls.scaleX, controls.scaleY, controls.scaleZ);
@@ -216,7 +271,7 @@ function init() {
 
         //controls.accX = controls.posX;
         //gui.updateDisplay();
-         // render using requestAnimationFrame
+        // render using requestAnimationFrame
         requestAnimationFrame(render);
         renderer.render(scene, camera);
     }
