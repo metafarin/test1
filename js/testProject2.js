@@ -18,8 +18,8 @@ function init() {
     renderer.domElement.style.position = 'absolute'
     renderer.domElement.style.top = '0px'
     renderer.domElement.style.left = '0px'
-    document.body.appendChild(renderer.domElement);
-
+    //document.body.appendChild(renderer.domElement);
+    document.getElementById("webgl-output").appendChild(renderer.domElement);
     // array of functions for the rendering loop
     var onRenderFcts = [];
 
