@@ -14,6 +14,8 @@
     <script src="js/GLTFLoader.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/TrackballControls.js"></script>
+    <script src="js/ar.js"></script>
+    <script src="js/ar-threex.js"></script>
 
     <link rel="stylesheet" href="css/default.css">
     
@@ -21,9 +23,12 @@
 
 </head>
 
-<body>
-
-    <div id="webgl-output"></div>
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+    <div style='position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;'>
+        <a href="https://github.com/jeromeetienne/AR.js/" target="_blank">AR.js</a> - three.js camera transform
+        <br />
+        Contact me any time at <a href='https://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
+    </div>
 
     <!-- Javascript code that runs our Three.js examples -->
     <script>
@@ -40,3 +45,4 @@
 </body>
 
 </html>
+
