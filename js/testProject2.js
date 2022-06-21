@@ -189,7 +189,7 @@ function init() {
     function devicemotion(event) {
 
         controls.accX = event.acceleration.x;
-        gui.updateDisplay();
+        //gui.updateDisplay();
     }
 
     function createControls(camera) {
