@@ -88,7 +88,7 @@ function init() {
     var arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
 
         type: 'pattern',
-        patternUrl: 'source/pattern-testMarker',
+        patternUrl: 'source/pattern-testMarker.patt',
         changeMatrixMode: 'cameraTransformMatrix'
     })
 
@@ -110,12 +110,12 @@ function init() {
     var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.castShadow = true;
     cube.name = "cube";
-    cube.position.y = cubeGeometry.parametra.height / 2;
+    //cube.position.y = cubeGeometry.parametra.height / 2;
 
     scene.add(cube);
 
     // add the output of the renderer to the html element
-    document.getElementById("webgl-output").appendChild(renderer.domElement);
+    //document.getElementById("webgl-output").appendChild(renderer.domElement);
 
     var controls = new function () {
         this.rotationSpeed = 0.02;
@@ -162,7 +162,7 @@ function init() {
 
     createControls(camera);
 
-    //var clock = new THREE.Clock();
+    var clock = new THREE.Clock();
 
     render();
 
