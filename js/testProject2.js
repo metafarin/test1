@@ -2,8 +2,8 @@ function init() {
 
     // listen to the resize events
     window.addEventListener('resize', onResize, false);
-    window.addEventListener('click', onMouseDown, false);
-    window.addEventListener('devicemotion', devicemotion, 1000);
+    //window.addEventListener('click', onMouseDown, false);
+    //window.addEventListener('devicemotion', devicemotion, 1000);
 
 
     //const _changeEvent = { type: 'change' };
@@ -16,13 +16,13 @@ function init() {
     var renderer = undefined;
     var trackballControls = undefined;
     var GLTFScene = undefined;
-    var mousePointer = new THREE.Vector2();
-    var raycasterManager = new THREE.Raycaster();
+    //var mousePointer = new THREE.Vector2();
+    //var raycasterManager = new THREE.Raycaster();
     var isObjectLoaded = false;
     var accelerometerData;
 
     // initialize stats
-    var stats = initStats();
+    //var stats = initStats();
 
     // create a render and set the size
     renderer = new THREE.WebGLRenderer({
@@ -113,38 +113,38 @@ function init() {
     // add the output of the renderer to the html element
     //document.getElementById("webgl-output").appendChild(renderer.domElement);
 
-    var controls = new function () {
-        this.rotationSpeed = 0.02;
-        this.bouncingSpeed = 0.03;
-        this.color = 0x7777ff;
-        this.ligthX = -10.0;
-        this.ligthY = 20.0;
-        this.ligthZ = -5.0;
-        this.scaleX = 5;
-        this.scaleY = 5;
-        this.scaleZ = 5;
-        this.posX = 0;
-        this.posY = 0;
-        this.posZ = 0;
-        this.accX = 0;
-        this.status = 'unknown';
-    };
+    //var controls = new function () {
+      //  this.rotationSpeed = 0.02;
+      //  this.bouncingSpeed = 0.03;
+      //  this.color = 0x7777ff;
+      //  this.ligthX = -10.0;
+      //  this.ligthY = 20.0;
+      //  this.ligthZ = -5.0;
+      //  this.scaleX = 5;
+      //  this.scaleY = 5;
+      //  this.scaleZ = 5;
+      //  this.posX = 0;
+      //  this.posY = 0;
+      //  this.posZ = 0;
+      //  this.accX = 0;
+      //  this.status = 'unknown';
+  //  };
 
-    const gui = new dat.GUI();
-    gui.add(controls, 'rotationSpeed', 0, 0.5);
-    gui.add(controls, 'bouncingSpeed', 0, 0.5);
-    gui.add(controls, 'ligthX', -100, 100);
-    gui.add(controls, 'ligthY', -100, 100);
-    gui.add(controls, 'ligthZ', -100, 100);
-    gui.add(controls, 'scaleX', 0, 20);
-    gui.add(controls, 'scaleY', 0, 20);
-    gui.add(controls, 'scaleZ', 0, 20);
-    gui.add(controls, 'posX', -100, 100);
-    gui.add(controls, 'posY', -100, 100);
-    gui.add(controls, 'posZ', -100, 100);
-    gui.add(controls, 'accX');
-    gui.add(controls, 'status');
-    gui.addColor(controls, 'color');
+    //const gui = new dat.GUI();
+    //gui.add(controls, 'rotationSpeed', 0, 0.5);
+    //gui.add(controls, 'bouncingSpeed', 0, 0.5);
+    //gui.add(controls, 'ligthX', -100, 100);
+    //gui.add(controls, 'ligthY', -100, 100);
+    //gui.add(controls, 'ligthZ', -100, 100);
+    //gui.add(controls, 'scaleX', 0, 20);
+    //gui.add(controls, 'scaleY', 0, 20);
+    //gui.add(controls, 'scaleZ', 0, 20);
+    //gui.add(controls, 'posX', -100, 100);
+    //gui.add(controls, 'posY', -100, 100);
+    //gui.add(controls, 'posZ', -100, 100);
+    //gui.add(controls, 'accX');
+    //gui.add(controls, 'status');
+    //gui.addColor(controls, 'color');
 
     //const gltfLoader = new THREE.GLTFLoader();
     //const loaderManagere = new THREE.LoadingManager();
@@ -158,17 +158,17 @@ function init() {
 
     // initialize the trackball controls and the clock which is needed
 
-    createControls(camera);
+    //createControls(camera);
 
-    var clock = new THREE.Clock();
+    //var clock = new THREE.Clock();
 
     render();
 
     function render() {
 
         // update the stats and the controls
-        trackballControls.update(clock.getDelta());
-        stats.update();
+        //trackballControls.update(clock.getDelta());
+        //stats.update();
 
         //if (isObjectLoaded == true) GLTFScene.scale.set(controls.scaleX, controls.scaleY, controls.scaleZ);
         //if (isObjectLoaded == true) GLTFScene.position.set(controls.posX, controls.posY, controls.posZ);
