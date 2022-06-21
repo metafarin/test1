@@ -24,16 +24,6 @@ function init() {
     // initialize stats
     var stats = initStats();
 
-
-    // create a scene, that will hold all our elements such as objects, cameras and lights.
-    scene = new THREE.Scene();
-
-    // create a camera, which defines where we're looking at.
-    camera = new THREE.Camera();
-
-    scene.add(camera);
-
-
     // create a render and set the size
     renderer = new THREE.WebGLRenderer({
 
@@ -41,21 +31,35 @@ function init() {
         alpha: true
     });
 
-    renderer.setClearColor(new THREE.Color(0x000000));
+    renderer.autoClear = false;
+    renderer.setClearColor(new THREE.Color('lightgrey'), 0)
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
+    renderer.domElement.style.position = 'absolute'
+    renderer.domElement.style.top = '0px'
+    renderer.domElement.style.left = '0px'
+    document.body.appendChild(renderer.domElement);
+
+    // create a scene, that will hold all our elements such as objects, cameras and lights.
+    scene = new THREE.Scene();
+
+    // create a camera, which defines where we're looking at.
+    //camera = new THREE.Camera();
+    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 100 );
+
+    scene.add(camera);
 
     var arToolkitSource = new THREEx.ArToolkitSource({
-        // to read from the webcam
+        // type of source - ['webcam', 'image', 'video']
         sourceType: 'webcam',
+        // url of the source - valid if sourceType = image|video
+        sourceUrl: null,
 
-        // // to read from an image
-        // sourceType : 'image',
-        // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
-
-        // to read from a video
-        // sourceType : 'video',
-        // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
+        // resolution of at which we initialize the source image
+        sourceWidth: 640,
+        sourceHeight: 480,
+        // resolution displayed for the source 
+        displayWidth: 640,
+        displayHeight: 480,
     });
 
     arToolkitSource.init(function () {
@@ -79,12 +83,6 @@ function init() {
         camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
     });
 
-    //camera.type = "pattern";
-
-    // camera.type = 'pattern';
-    //camera.patternUrl = 'source/pattern-testMarker';
-    //camera.changeMatrixMode = 'cameraTransformMatrix;
-
     var arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
 
         type: 'pattern',
@@ -96,6 +94,7 @@ function init() {
 
     // create a cube
     var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+
     var cubeMaterial = new THREE.MeshLambertMaterial({
 
         color: 0xff0000,
@@ -103,9 +102,6 @@ function init() {
         opacity: 0.5,
         side: THREE.DoubleSide
     });
-
-
-
 
     var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.castShadow = true;
@@ -131,6 +127,7 @@ function init() {
         this.posY = 0;
         this.posZ = 0;
         this.accX = 0;
+        this.status = 'unknown';
     };
 
     const gui = new dat.GUI();
@@ -146,6 +143,7 @@ function init() {
     gui.add(controls, 'posY', -100, 100);
     gui.add(controls, 'posZ', -100, 100);
     gui.add(controls, 'accX');
+    gui.add(controls, 'status');
     gui.addColor(controls, 'color');
 
     //const gltfLoader = new THREE.GLTFLoader();
@@ -184,7 +182,7 @@ function init() {
 
     function onResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
-        //camera.updateProjectionMatrix();
+        camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
@@ -204,8 +202,6 @@ function init() {
 
         trackballControls.keys = ['KeyA', 'KeyS', 'KeyD'];
     }
-
-    const scope = this;
 
     function onMouseDown(event) {
 
