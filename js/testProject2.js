@@ -79,28 +79,37 @@ function init() {
         camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
     });
 
-    camera({
+    //camera.type = "pattern";
+
+    // camera.type = 'pattern';
+    //camera.patternUrl = 'source/pattern-testMarker';
+    //camera.changeMatrixMode = 'cameraTransformMatrix;
+
+    var arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
 
         type: 'pattern',
         patternUrl: 'source/pattern-testMarker',
         changeMatrixMode: 'cameraTransformMatrix'
-
-    });
-
-    arMarkerControls = THREEx.ArMarkerControls(arToolkitContext, camera);
+    })
 
     scene.visible = false;
 
-    var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
-    var cubeMaterial = new THREE.MeshNormalMaterial({
+    // create a cube
+    var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    var cubeMaterial = new THREE.MeshLambertMaterial({
 
+        color: 0xff0000,
         transparent: true,
         opacity: 0.5,
         side: THREE.DoubleSide
     });
 
-    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
+
+
+    var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cube.castShadow = true;
+    cube.name = "cube";
     cube.position.y = cubeGeometry.parametra.height / 2;
 
     scene.add(cube);
