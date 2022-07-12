@@ -99,7 +99,7 @@ function init() {
     var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
 
         type: 'nft',
-        descriptorsUrl: 'source/nft/test3',
+        descriptorsUrl: 'source/nft/images',
         changeMatrixMode: 'cameraTransformMatrix'
     })
 
