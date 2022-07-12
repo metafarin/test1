@@ -83,21 +83,12 @@ function init() {
 
 
 
-    //arToolkitContext = new THREEx.ArToolkitContext({
+    arToolkitContext = new THREEx.ArToolkitContext({
 
-    //  cameraParametersUrl: 'source/camera_para.dat',
-    // //detectionMode: 'color_and_matrix'
-    detectionMode: 'mono'
-    // });
-
-    var arToolkitContext = new THREEx.ArToolkitContext({
-        detectionMode: 'mono',
-        canvasWidth: 480,
-        canvasHeight: 640,
-    }, {
-        sourceWidth: 480,
-        sourceHeight: 640,
-    })
+        cameraParametersUrl: 'source/camera_para.dat',
+        //detectionMode: 'color_and_matrix'
+        detectionMode: 'mono'
+    });
 
     arToolkitContext.init(function () {
 
@@ -149,12 +140,12 @@ function init() {
         requestAnimationFrame(render);
 
         //if (!arToolkitSource.ready) {
-        //  return;
+          //  return;
         //}
 
         //arToolkitContext.update(arToolkitSource.domElement);
         scene.visible = camera.visible;
-        if (arToolkitSource.ready !== false)
+         if (arToolkitSource.ready !== false)
             arToolkitContext.update(arToolkitSource.domElement);
 
         renderer.render(scene, camera);
